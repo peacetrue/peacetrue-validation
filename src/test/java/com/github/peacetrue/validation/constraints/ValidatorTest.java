@@ -1,0 +1,46 @@
+package com.github.peacetrue.validation.constraints;
+
+import org.junit.Assert;
+import org.junit.Test;
+
+import javax.validation.ConstraintViolation;
+import javax.validation.Validation;
+import javax.validation.Validator;
+import java.util.Set;
+
+/**
+ * the test for {@link Validator}
+ *
+ * @author xiayx
+ */
+public class ValidatorTest {
+
+    private Validator validator = Validation.buildDefaultValidatorFactory().getValidator();
+
+    @Test
+    public void in() throws Exception {
+        InTB user = new InTB();
+        Set<ConstraintViolation<InTB>> violations = validator.validate(user);
+        Assert.assertEquals(violations.size(), 0);
+
+        user.setName("name2");
+        violations = validator.validate(user);
+        Assert.assertEquals(violations.size(), 1);
+
+        user.setName("name");
+        violations = validator.validate(user);
+        Assert.assertEquals(violations.size(), 0);
+    }
+
+    @Test
+    public void multiNotNull() {
+        MultiNotNullTB multiNotNullTB = new MultiNotNullTB();
+        Set<ConstraintViolation<MultiNotNullTB>> violations = validator.validate(multiNotNullTB);
+        Assert.assertEquals(violations.size(), 1);
+        System.out.println(violations);
+
+        multiNotNullTB.setCode("22");
+        violations = validator.validate(multiNotNullTB);
+        Assert.assertEquals(violations.size(), 0);
+    }
+}

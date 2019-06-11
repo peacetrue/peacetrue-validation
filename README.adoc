@@ -1,0 +1,30 @@
+= 验证
+peacetrue
+v1.0, 2019-06-10: SNAPSHOT
+:doctype: docbook
+:toc: left
+:numbered:
+:imagesdir: docs/assets/images
+:sourcedir: src/main/java
+:resourcesdir: src/main/resources
+:testsourcedir: src/test/java
+:source-highlighter: coderay
+:coderay-linenums-mode: inline
+
+
+== 参考
+* https://beanvalidation.org
+* http://hibernate.org/validator/
+
+.依赖
+* ``javax.validation:validation-api:1.0.0.GA``：验证spi
+* ``org.hibernate:hibernate-validator:4.3.1.Final``：验证spi的Hibernate实现
+* ``spring-beans-4.3.18.RELEASE``：使用其反射工具类
+
+==  MultiNotNull
+申明一个bean中，多个属性值不能同时为null。
+
+[source%nowrap,java]
+----
+include::{testsourcedir}/com/github/peacetrue/validation/constraints/MultiNotNullTB.java[tags=class]
+----
