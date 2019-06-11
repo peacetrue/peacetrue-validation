@@ -26,10 +26,10 @@ public @interface MultiNotNull {
 
     Class<? extends Payload>[] payload() default {};
 
-    /** 属性名 */
-    String[] propertyNames();
+    /** 属性名，不传默认该bean下的所有属性，无效的属性会被忽略 */
+    String[] propertyNames() default {};
 
-    /** 至少有几个，默认为1 */
+    /** 至少有几个非null的属性，默认为1 */
     int count() default 1;
 
     /**

@@ -1,6 +1,5 @@
 package com.github.peacetrue.validation.constraints.multinotnull;
 
-import com.github.peacetrue.lang.reflect.NoSuchPropertyException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.BeanUtils;
@@ -9,10 +8,8 @@ import org.springframework.util.ReflectionUtils;
 import javax.validation.ConstraintValidator;
 import javax.validation.ConstraintValidatorContext;
 import java.beans.PropertyDescriptor;
-import java.lang.reflect.Method;
 import java.util.Arrays;
 import java.util.HashSet;
-import java.util.List;
 import java.util.Set;
 
 /**
@@ -37,22 +34,23 @@ public class MultiNotNullValidator implements ConstraintValidator<MultiNotNull, 
     @Override
     public boolean isValid(Object value, ConstraintValidatorContext context) {
         logger.info("执行 MultiNotNull 验证 For [{}]", value);
-        if (value == null) return false;
+        if (value == null) return true;
 
         Class<?> valueClass = value.getClass();
-        List<PropertyDescriptor> propertyDescriptors = Arrays.asList(BeanUtils.getPropertyDescriptors(valueClass));
-        int nullCount = 0;
-        for (String propertyName : propertyNames) {
-            Method method = propertyDescriptors.stream()
-                    .filter(propertyDescriptor -> propertyDescriptor.getName().equals(propertyName))
-                    .findAny().map(PropertyDescriptor::getReadMethod)
-                    .orElseThrow(() -> new NoSuchPropertyException(valueClass, propertyName));
-            Object propertyValue = ReflectionUtils.invokeMethod(method, value);
-            if (propertyValue == null) nullCount++;
+        PropertyDescriptor[] propertyDescriptors = BeanUtils.getPropertyDescriptors(valueClass);
+        int notNullCount = 0;
+        for (PropertyDescriptor propertyDescriptor : propertyDescriptors) {
+            //空属性默认使用所有属性
+            if (!propertyNames.isEmpty() && !propertyNames.contains(propertyDescriptor.getName())) continue;
+            //排除Class.getClass及其他非bean的属性
+            if (propertyDescriptor.getReadMethod() == null || propertyDescriptor.getWriteMethod() == null) continue;
+            Object propertyValue = ReflectionUtils.invokeMethod(propertyDescriptor.getReadMethod(), value);
+            logger.debug("取得属性[{}]的值为: {}", propertyDescriptor.getName(), propertyValue);
+            if (propertyValue != null) notNullCount++;
         }
-        logger.debug("取得 not null 值的数目[{}]", propertyNames.size() - nullCount);
+        logger.debug("取得 not null 值的数目[{}]", notNullCount);
 
-        return propertyNames.size() - nullCount >= count;
+        return notNullCount >= count;
     }
 
 }

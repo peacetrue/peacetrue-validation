@@ -10,7 +10,7 @@ import javax.validation.Valid;
  */
 //tag::class[]
 @Data
-@MultiNotNull(propertyNames = {"id", "code", "expressCode"})
+@MultiNotNull
 public class MultiNotNullTB {
 
     private String id;
