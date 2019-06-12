@@ -43,4 +43,16 @@ public class ValidatorTest {
         violations = validator.validate(multiNotNullTB);
         Assert.assertEquals(violations.size(), 0);
     }
+
+    @Test
+    public void consistency() {
+        ConsistencyTB consistencyTB = new ConsistencyTB();
+        Set<ConstraintViolation<ConsistencyTB>> violations = validator.validate(consistencyTB);
+        Assert.assertEquals(violations.size(), 0);
+
+        consistencyTB.setCode("22");
+        violations = validator.validate(consistencyTB);
+        Assert.assertEquals(violations.size(), 2);
+        System.out.println(violations);
+    }
 }

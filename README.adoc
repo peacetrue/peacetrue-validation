@@ -28,3 +28,11 @@ v1.0, 2019-06-10: SNAPSHOT
 ----
 include::{testsourcedir}/com/github/peacetrue/validation/constraints/MultiNotNullTB.java[tags=class]
 ----
+
+==  Consistency
+申明一个bean中，多个属性值具有一致性表现，必须同时为null或者同时为非null
+
+[source%nowrap,java]
+----
+include::{testsourcedir}/com/github/peacetrue/validation/constraints/ConsistencyTB.java[tags=class]
+----

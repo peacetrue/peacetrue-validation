@@ -1,4 +1,4 @@
-package com.github.peacetrue.validation.constraints.multinotnull;
+package com.github.peacetrue.validation.constraints.consistency;
 
 import com.github.peacetrue.beans.BeanUtils;
 import org.slf4j.Logger;
@@ -11,42 +11,43 @@ import java.beans.PropertyDescriptor;
 import java.util.Arrays;
 
 /**
- * 验证一个对象的多个属性值至少有n个不能为null
+ * 一个bean中，多个属性值具有一致性表现，
+ * 必须同时为null或者同时为非null
  *
  * @author xiayx
  */
-public class MultiNotNullValidator implements ConstraintValidator<MultiNotNull, Object> {
+public class ConsistencyValidator implements ConstraintValidator<Consistency, Object> {
 
-    protected Logger logger = LoggerFactory.getLogger(getClass());
+    private Logger logger = LoggerFactory.getLogger(getClass());
 
     private String[] propertyNames;
-    private int count;
 
     @Override
-    public void initialize(MultiNotNull constraintAnnotation) {
+    public void initialize(Consistency constraintAnnotation) {
         logger.info("初始化注解[{}]", constraintAnnotation);
         this.propertyNames = constraintAnnotation.propertyNames();
-        this.count = constraintAnnotation.count();
     }
 
     @Override
     public boolean isValid(Object value, ConstraintValidatorContext context) {
-        logger.info("执行 MultiNotNull 验证 For [{}]", value);
+        logger.info("执行 Consistency 验证 For [{}]", value);
         if (value == null) return true;
 
         Class<?> valueClass = value.getClass();
         PropertyDescriptor[] descriptors = BeanUtils.getPropertyDescriptors(valueClass);
-        int notNullCount = 0;
+        int nullCount = 0, propertyCount = 0;
         for (PropertyDescriptor descriptor : descriptors) {
             if (descriptor.getReadMethod() == null || descriptor.getWriteMethod() == null) continue;
             if (propertyNames.length != 0 && Arrays.stream(propertyNames).noneMatch(propertyName -> propertyName.equals(descriptor.getName()))) continue;
+            propertyCount++;
             Object propertyValue = ReflectionUtils.invokeMethod(descriptor.getReadMethod(), value);
             logger.debug("取得属性[{}]的值为: {}", descriptor.getName(), propertyValue);
-            if (propertyValue != null) notNullCount++;
+            if (propertyValue == null) nullCount++;
         }
-        logger.debug("取得 not null 值的数目[{}]", notNullCount);
 
-        return notNullCount >= count;
+        logger.debug("取得 null 值的数目[{}]", nullCount);
+
+        return nullCount == 0 || nullCount == propertyCount;
     }
 
 }
