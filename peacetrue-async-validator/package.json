@@ -1,0 +1,38 @@
+{
+  "name": "peacetrue-async-validator",
+  "version": "1.0.0",
+  "description": "async validator 扩展",
+  "type": "module",
+  "private": false,
+  "files": [
+    "src",
+    "dist",
+    "test"
+  ],
+  "scripts": {
+    "build": "webpack"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/peacetrue/peacetrue-validation"
+  },
+  "author": "xiayx",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/peacetrue/peacetrue-validation/issues"
+  },
+  "homepage": "https://github.com/peacetrue/peacetrue-validation#readme",
+  "directories": {
+    "test": "test"
+  },
+  "keywords": [],
+  "devDependencies": {
+    "clean-webpack-plugin": "^3.0.0",
+    "webpack": "^4.34.0",
+    "webpack-cli": "^3.3.4"
+  },
+  "dependencies": {
+    "axios": "^0.19.0",
+    "peacetrue-js": "^1.0.5"
+  }
+}
