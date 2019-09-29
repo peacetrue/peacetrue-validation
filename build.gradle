@@ -55,7 +55,7 @@ allprojects { project ->
         api "org.slf4j:slf4j-api"
         api "javax.validation:validation-api:2.0.1.Final"
         implementation "org.hibernate:hibernate-validator:6.0.7.Final"
-        implementation "org.apache.tomcat.embed:tomcat-embed-el:9.0.24"
+        implementation "org.apache.tomcat.embed:tomcat-embed-el"
         implementation "org.hibernate.javax.persistence:hibernate-jpa-2.1-api:1.0.2.Final"
         implementation "org.springframework:spring-beans"//StringUtils
 
