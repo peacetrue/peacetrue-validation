@@ -1,0 +1,6 @@
+name: peacetrue-validation
+title: 验证相关
+version: master
+start_page: validation-principle.adoc
+nav:
+  - modules/ROOT/nav.adoc

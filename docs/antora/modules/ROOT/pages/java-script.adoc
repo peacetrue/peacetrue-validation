@@ -1,0 +1,4 @@
+= 基于JavaScript的验证
+
+在网上看到"面向GitHub编程"，觉得挺好。
+https://github.com/skaterdav85/validatorjs[validatorjs]

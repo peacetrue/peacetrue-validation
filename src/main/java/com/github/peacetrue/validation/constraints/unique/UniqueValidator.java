@@ -3,11 +3,11 @@ package com.github.peacetrue.validation.constraints.unique;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.BeanUtils;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.convert.ConversionService;
 import org.springframework.util.ReflectionUtils;
 import org.springframework.util.StringUtils;
 
-import javax.annotation.Resource;
 import javax.validation.ConstraintValidator;
 import javax.validation.ConstraintValidatorContext;
 import java.lang.annotation.Annotation;
@@ -30,7 +30,7 @@ public abstract class UniqueValidator<T extends Annotation> implements Constrain
     protected Method[] readMethods;
     protected Object[] propertyValues;
     protected String delimiter;
-    @Resource
+    @Autowired
     private ConversionService conversionService;
 
     public void initialize(T annotation) {

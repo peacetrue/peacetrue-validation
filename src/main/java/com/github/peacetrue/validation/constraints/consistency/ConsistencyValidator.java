@@ -45,6 +45,10 @@ public class ConsistencyValidator implements ConstraintValidator<Consistency, Ob
             if (propertyValue == null) nullCount++;
         }
 
+        context.buildConstraintViolationWithTemplate(context.getDefaultConstraintMessageTemplate())
+                .addBeanNode().inIterable().atIndex(1).addConstraintViolation();
+//                .addPropertyNode("[1,2,3]").addPropertyNode("mobile").addConstraintViolation();
+
         logger.debug("取得 null 值的数目[{}]", nullCount);
 
         return nullCount == 0 || nullCount == propertyCount;

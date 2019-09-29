@@ -21,15 +21,15 @@ public class ValidatorTest {
     public void in() throws Exception {
         InTB user = new InTB();
         Set<ConstraintViolation<InTB>> violations = validator.validate(user);
-        Assert.assertEquals(violations.size(), 0);
+        Assert.assertEquals(1, violations.size());
 
-        user.setName("name2");
-        violations = validator.validate(user);
-        Assert.assertEquals(violations.size(), 1);
+//        user.setName("name2");
+//        violations = validator.validate(user);
+//        Assert.assertEquals(0, violations.size());
 
         user.setName("name");
         violations = validator.validate(user);
-        Assert.assertEquals(violations.size(), 0);
+        Assert.assertEquals(0, violations.size());
     }
 
     @Test

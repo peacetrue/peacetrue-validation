@@ -1,0 +1,11 @@
+= Form Validation
+
+【Form Validation】是一个JavaScript实现的基于表单的验证框架，
+官网地址为 https://formvalidation.io[^]。
+
+之前，还没有 Vue 的时候，就用的【Form Validation】，设计得很棒，
+主要需要开发处理的部分就是展示错误描述。
+当前端框架从 jQuery 转变到 Vue、React 之后，就没有再使用【Form Validation】。
+其实，验证是一个纯逻辑层面的东西，不一定非要和表单一起使用，
+如果它能基于对象进行验证就完美了。
+

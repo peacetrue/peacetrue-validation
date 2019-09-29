@@ -23,3 +23,5 @@
 .ideaDataSources
 /local/*
 /dataSources/*
+
+*/node_modules

@@ -1,0 +1,7 @@
+= Hibernate Validation
+
+【hibernate validator】是【Bean Validation】的一种实现，
+ 官网地址为 http://hibernate.org/validator/[^]。
+
+
+
