@@ -1,6 +1,6 @@
 {
   "name": "peacetrue-async-validator",
-  "version": "1.0.1",
+  "version": "1.0.3",
   "description": "async validator 扩展",
   "type": "module",
   "private": false,

@@ -1,4 +1,4 @@
-let Core = require('peacetrue-js/src/core');
+let Core = require('peacetrue-js/dist/peace.core');
 
 module.exports = {
     name: 'requires',
