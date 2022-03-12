@@ -1,64 +1,52 @@
 package com.github.peacetrue.validation.constraints.in;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-import org.springframework.util.StringUtils;
+import lombok.extern.slf4j.Slf4j;
 
 import javax.validation.ConstraintValidator;
 import javax.validation.ConstraintValidatorContext;
-import java.lang.annotation.Annotation;
-import java.util.Arrays;
+import java.util.Collection;
 import java.util.Collections;
-import java.util.List;
 import java.util.Set;
 import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 /**
- * validator for {@link In}
+ * {@link In} 验证器。支持验证字符串和集合字符串。
  *
- * @author xiayx
+ * @author peace
  */
-public abstract class InValidator<T extends Annotation> implements ConstraintValidator<T, Object> {
+@Slf4j
+public class InValidator implements ConstraintValidator<In, Object> {
 
-    protected Logger logger = LoggerFactory.getLogger(getClass());
+    private Set<String> values = Collections.emptySet();
+    private boolean negative = false;
 
-    protected List<?> values = Collections.emptyList();
-    protected String delimiter;
-
-    public void initialize(T in) {
-        logger.debug("initialize InValidator");
-        initializeAnnotation(in);
+    @Override
+    public void initialize(In annotation) {
+        log.trace("initialize In: '{}'", annotation);
+        this.values = Stream.of(annotation.values()).collect(Collectors.toSet());
+        this.negative = annotation.negative();
     }
 
-    protected abstract void initializeAnnotation(T annotation);
-
+    @Override
     public boolean isValid(Object value, ConstraintValidatorContext context) {
-        logger.info("validate value [{}]", value);
+        log.trace("validate value '{}' by In", value);
+        if (value == null) return true;
 
-        if (StringUtils.isEmpty(value)) {
-            logger.trace("empty value means valid");
-            return true;
+        if (value instanceof Collection) {
+            return negative(this.values.stream().anyMatch(((Collection<?>) value)::contains));
         }
 
-        if (values == null || values.isEmpty()) {
-            logger.trace("empty collection values means valid");
-            return true;
+        if (value instanceof String) {
+            return negative(this.values.contains(value));
         }
 
-        boolean valid = valid(value, context);
-        logger.trace("validate is {} in {} return {}", value, this.values.size() >= 10 ? ("size " + this.values.size()) : this.values, valid);
-        return valid;
+        log.warn("unsupported '{}' type, must be String or Collection<String>", value.getClass().getName());
+        return false;
     }
 
-    protected boolean valid(Object value, ConstraintValidatorContext context) {
-        if (StringUtils.isEmpty(delimiter)) return this.values.contains(value);
-        String stringValue = value.toString();
-        Set<String> values = Arrays.stream(stringValue.split(delimiter))
-                .map(StringUtils::trimWhitespace)
-                .filter(s -> !StringUtils.isEmpty(s))
-                .collect(Collectors.toSet());
-        logger.trace("split {} with delimiter {} to {}", stringValue, delimiter, values);
-        return this.values.containsAll(values);
+    private boolean negative(boolean contains) {
+        return (this.negative && !contains) || (!this.negative && contains);
     }
 
 }

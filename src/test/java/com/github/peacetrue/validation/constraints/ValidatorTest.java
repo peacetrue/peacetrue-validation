@@ -1,7 +1,7 @@
 package com.github.peacetrue.validation.constraints;
 
-import org.junit.Assert;
-import org.junit.Test;
+import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.Test;
 
 import javax.validation.ConstraintViolation;
 import javax.validation.Validation;
@@ -9,50 +9,92 @@ import javax.validation.Validator;
 import java.util.Set;
 
 /**
- * the test for {@link Validator}
- *
- * @author xiayx
+ * @author peace
  */
-public class ValidatorTest {
+class ValidatorTest {
 
-    private Validator validator = Validation.buildDefaultValidatorFactory().getValidator();
-
-    @Test
-    public void in() throws Exception {
-        InTB user = new InTB();
-        Set<ConstraintViolation<InTB>> violations = validator.validate(user);
-        Assert.assertEquals(1, violations.size());
-
-//        user.setName("name2");
-//        violations = validator.validate(user);
-//        Assert.assertEquals(0, violations.size());
-
-        user.setName("name");
-        violations = validator.validate(user);
-        Assert.assertEquals(0, violations.size());
-    }
+    private final Validator validator = Validation.buildDefaultValidatorFactory().getValidator();
 
     @Test
-    public void multiNotNull() {
+    void multiNotNull() {
         MultiNotNullTB multiNotNullTB = new MultiNotNullTB();
         Set<ConstraintViolation<MultiNotNullTB>> violations = validator.validate(multiNotNullTB);
-        Assert.assertEquals(violations.size(), 1);
+        Assertions.assertEquals(2, violations.size());
         System.out.println(violations);
 
         multiNotNullTB.setCode("22");
         violations = validator.validate(multiNotNullTB);
-        Assert.assertEquals(violations.size(), 0);
+        Assertions.assertEquals(0, violations.size());
     }
 
     @Test
-    public void consistency() {
+    void consistency() {
         ConsistencyTB consistencyTB = new ConsistencyTB();
         Set<ConstraintViolation<ConsistencyTB>> violations = validator.validate(consistencyTB);
-        Assert.assertEquals(violations.size(), 0);
+        Assertions.assertEquals(0, violations.size());
 
         consistencyTB.setCode("22");
         violations = validator.validate(consistencyTB);
-        Assert.assertEquals(violations.size(), 2);
+        Assertions.assertEquals(2, violations.size());
+    }
+
+    @Test
+    void in() {
+        InTB inTB = new InTB();
+        Set<ConstraintViolation<InTB>> violations = validator.validate(inTB);
+        Assertions.assertEquals(1, violations.size());
+
+        inTB.setName("x0");
+        violations = validator.validate(inTB);
+        Assertions.assertEquals(1, violations.size());
+
+        inTB.setName("x1");
+        violations = validator.validate(inTB);
+        Assertions.assertEquals(0, violations.size());
+
+        inTB.setName("x2");
+        violations = validator.validate(inTB);
+        Assertions.assertEquals(0, violations.size());
+
+        inTB.setName("x3");
+        violations = validator.validate(inTB);
+        Assertions.assertEquals(1, violations.size());
+
+        inTB.setName("x1");
+        inTB.setJson("x3");
+        violations = validator.validate(inTB);
+        Assertions.assertEquals(1, violations.size());
+
+        inTB.setJson("{\"a\":\"a\"}");
+        violations = validator.validate(inTB);
+        Assertions.assertEquals(0, violations.size());
+    }
+
+    @Test
+    void unique() {
+        Set<ConstraintViolation<TestBean>> violations;
+        TestBean testBean = new TestBean();
+        testBean.setId("1");
+        testBean.setName("name");
+        violations = validator.validate(testBean);
+        Assertions.assertEquals(1, violations.size());
+    }
+
+    @Test
+    void totalLength() {
+        Set<ConstraintViolation<TestBean>> violations;
+        TestBean testBean = new TestBean();
+        testBean.setScopes(new String[]{"1"});
+        violations = validator.validate(testBean);
+        Assertions.assertEquals(1, violations.size());
+
+        testBean.setScopes(new String[]{"11", "222"});
+        violations = validator.validate(testBean);
+        Assertions.assertEquals(0, violations.size());
+
+        testBean.setScopes(new String[]{"1111111", "221112"});
+        violations = validator.validate(testBean);
         System.out.println(violations);
+        Assertions.assertEquals(1, violations.size());
     }
 }

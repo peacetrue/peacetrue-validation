@@ -1,4 +1,4 @@
-package com.github.peacetrue.validation.constraints.mapbean;
+package com.github.peacetrue.validation.constraints.json;
 
 import javax.validation.Constraint;
 import javax.validation.Payload;
@@ -8,19 +8,16 @@ import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
 
 /**
- * a bean described by {@link java.util.Map}
+ * 标记在字符串属性上，验证属性值必须是一个有效的 JSON 字符串。
  *
- * @author xiayx
+ * @author peace
  */
 @Target({ElementType.TYPE, ElementType.FIELD, ElementType.METHOD})
 @Retention(RetentionPolicy.RUNTIME)
-@Constraint(validatedBy = MapBeanValidator.class)
-public @interface MapBean {
+@Constraint(validatedBy = JSONConstraintValidator.class)
+public @interface JSON {
 
-    String message() default "{com.github.peacetrue.validation.constraints.MapBean.message}";
-
-    /** bean name */
-    String value() default "";
+    String message() default "{com.github.peacetrue.validation.constraints.JSON.message}";
 
     Class<?>[] groups() default {};
 

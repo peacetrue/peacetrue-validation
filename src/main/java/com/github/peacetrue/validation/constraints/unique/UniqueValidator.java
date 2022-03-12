@@ -1,93 +1,54 @@
 package com.github.peacetrue.validation.constraints.unique;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-import org.springframework.beans.BeanUtils;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.core.convert.ConversionService;
-import org.springframework.util.ReflectionUtils;
+import com.github.peacetrue.spring.beans.BeanUtils;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.util.StringUtils;
 
 import javax.validation.ConstraintValidator;
 import javax.validation.ConstraintValidatorContext;
-import java.lang.annotation.Annotation;
-import java.lang.reflect.Method;
-import java.util.Arrays;
-import java.util.List;
+import java.util.Objects;
+
+import static org.springframework.beans.BeanUtils.instantiateClass;
 
 
 /**
- * validator for {@link Unique} and {@link UniqueRemote}
+ * 唯一性验证器。
  *
- * @author xiayx
+ * @author peace
  */
-public abstract class UniqueValidator<T extends Annotation> implements ConstraintValidator<T, List<?>> {
+@Slf4j
+public class UniqueValidator implements ConstraintValidator<Unique, Object> {
 
-    protected Logger logger = LoggerFactory.getLogger(getClass());
+    private String idProperty;
+    private String uniqueProperty;
+    private UniqueChecker uniqueChecker;
 
-    protected Class<?> beanClass;
-    protected String[] properties;
-    protected Method[] readMethods;
-    protected Object[] propertyValues;
-    protected String delimiter;
-    @Autowired
-    private ConversionService conversionService;
-
-    public void initialize(T annotation) {
-        logger.debug("initialize validator");
-        initializeAnnotation(annotation);
-        setReadMethods();
-        setDefaultValues();
+    @Override
+    public void initialize(Unique annotation) {
+        this.idProperty = annotation.id();
+        this.uniqueProperty = annotation.unique();
+        this.uniqueChecker = instantiateClass(Objects.requireNonNull(annotation.check()));
     }
 
-    /** set annotation properties into this properties */
-    protected abstract void initializeAnnotation(T annotation);
+    @Override
+    public boolean isValid(Object value, ConstraintValidatorContext context) {
+        if (value == null) return true;
+        if (!StringUtils.hasLength(uniqueProperty)) return this.uniqueChecker.check(null, value);
 
-    protected void setReadMethods() {
-        //get read methods prepare for validate
-        this.readMethods = new Method[properties.length];
-        for (int i = 0; i < properties.length; i++) {
-            readMethods[i] = BeanUtils.getPropertyDescriptor(beanClass, properties[i]).getReadMethod();
-        }
-    }
+        Object uniqueValue = BeanUtils.getPropertyValue(value, uniqueProperty);
+        log.trace("got unique value '{}' by property '{}'", uniqueValue, uniqueProperty);
+        if (uniqueValue == null) return true;
 
-    protected void setDefaultValues() {
-        for (int i = 0; i < this.propertyValues.length; i++) {
-            if (StringUtils.isEmpty(this.propertyValues[i])) continue;
-            this.propertyValues[i] = conversionService.convert(this.propertyValues[i], this.readMethods[i].getReturnType());
-        }
-    }
+        Object idValue = StringUtils.hasLength(uniqueProperty) ? BeanUtils.getPropertyValue(value, idProperty) : null;
+        log.trace("got id value '{}' by property '{}'", idValue, idProperty);
+        boolean valid = this.uniqueChecker.check(idValue, uniqueValue);
+        if (valid) return true;
 
-    protected void buildConstraintViolation(ConstraintValidatorContext context, List<?> duplication) {
         context.disableDefaultConstraintViolation();
-        String template = String.format(context.getDefaultConstraintMessageTemplate(), duplication);
-        context.buildConstraintViolationWithTemplate(template).addConstraintViolation();
-    }
-
-    protected Object[] getValues(Object object) {
-        Object[] values = new Object[readMethods.length];
-        for (int i = 0; i < readMethods.length; i++) {
-            values[i] = ReflectionUtils.invokeMethod(readMethods[i], object);
-        }
-        //all empty return null
-        if (Arrays.stream(values).allMatch(StringUtils::isEmpty)) return null;
-
-        //multiple value support default value
-        for (int i = 0; i < values.length; i++) {
-            values[i] = processDefaultValue(i, values[i]);
-        }
-        return values;
-    }
-
-    protected Object processDefaultValue(int i, Object value) {
-        if (!StringUtils.isEmpty(value)) return value;
-        if (propertyValues == null || propertyValues.length <= i || StringUtils.isEmpty(propertyValues[i]))
-            return value;
-        return propertyValues[i];
-    }
-
-    protected Object concatValues(Object[] values) {
-        return StringUtils.arrayToDelimitedString(values, delimiter);
+        context.buildConstraintViolationWithTemplate(context.getDefaultConstraintMessageTemplate())
+                .addPropertyNode(uniqueProperty)
+                .addConstraintViolation();
+        return false;
     }
 
 }

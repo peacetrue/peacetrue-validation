@@ -3,44 +3,59 @@ package com.github.peacetrue.validation.constraints.unique;
 import javax.validation.Constraint;
 import javax.validation.Payload;
 import java.lang.annotation.*;
-import java.util.Collection;
 
 import static java.lang.annotation.ElementType.FIELD;
 import static java.lang.annotation.ElementType.METHOD;
 import static java.lang.annotation.RetentionPolicy.RUNTIME;
 
 /**
- * used on {@link Collection} to validate the elements ara unique
+ * 验证值是唯一的。
+ * <p>
+ * 存在以下常见场景：
+ * <ul>
+ *     <li>验证值在数据库中是唯一的
+ *     <ul>
+ *         <li>单个属性值即可完成校验。新增时，标注在属性上，从数据库查询该属性值是否存在</li>
+ *         <li>多个属性值才能完成校验。修改时，标注在对象上，指定对象主键和唯一属性，如果属性值被修改，从数据库查询该属性值是否存在</li>
+ *     </ul>
+ *     </li>
+ * </ul>
  *
- * @author xiayx
+ * @author peace
  */
-@Target({ElementType.FIELD, ElementType.METHOD})
+@Target({ElementType.TYPE, ElementType.FIELD, ElementType.METHOD})
 @Retention(RetentionPolicy.RUNTIME)
-@Constraint(validatedBy = LocalUniqueValidator.class)
+@Constraint(validatedBy = UniqueValidator.class)
 public @interface Unique {
 
-    /** the type of element in {@link Collection} */
-    Class<?> beanClass();
+    /**
+     * 主键属性名
+     *
+     * @return 主键属性名
+     */
+    String id() default "";
 
-    /** property name may multiple */
-    String[] properties() default {};
+    /**
+     * 唯一属性名
+     *
+     * @return 唯一属性名
+     */
+    String unique() default "";
 
-    /** the default property value */
-    String[] propertyValues() default {};
+    /**
+     * 唯一值检查器，实际执行检查逻辑的类。
+     *
+     * @return 唯一值检查器类
+     */
+    Class<? extends UniqueChecker> check();
 
-    String delimiter() default "";
-
-    String message() default "{com.github.peacetrue.validation.constraints.Unique.message}%s";
+    String message() default "{com.github.peacetrue.validation.constraints.Unique.message}";
 
     Class<?>[] groups() default {};
 
     Class<? extends Payload>[] payload() default {};
 
-    /**
-     * Defines several {@link Unique} annotations on the same element.
-     *
-     * @see Unique
-     */
+    /** 同一个元素上可重复声明 {@link Unique} */
     @Target({METHOD, FIELD})
     @Retention(RUNTIME)
     @Documented

@@ -6,16 +6,19 @@ import lombok.Data;
 import javax.validation.Valid;
 
 /**
- * @author xiayx
+ * @author peace
  */
 //tag::class[]
 @Data
-@MultiNotNull
+@MultiNotNull.List({
+        @MultiNotNull(properties = {"id", "code", "name"}),
+        @MultiNotNull(properties = {"id"}, negative = true)
+})
 public class MultiNotNullTB {
 
     private String id;
     private String code;
-    private String expressCode;
+    private String name;
 
     @Data
     public static class Wrapper {

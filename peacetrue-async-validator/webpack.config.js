@@ -6,7 +6,7 @@ let options = args2options(process.argv, '-pt:');
 //生成一个源文件、一个压缩文件和一个source map 文件
 
 let config = {
-    mode: 'production',
+    mode: 'development',//production
     entry: "./index.js",
     devtool: 'source-map',
     plugins: [

@@ -1,57 +1,40 @@
 package com.github.peacetrue.validation.constraints.consistency;
 
-import com.github.peacetrue.beans.BeanUtils;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-import org.springframework.util.ReflectionUtils;
+import com.github.peacetrue.spring.beans.BeanUtils;
+import lombok.extern.slf4j.Slf4j;
 
 import javax.validation.ConstraintValidator;
 import javax.validation.ConstraintValidatorContext;
-import java.beans.PropertyDescriptor;
 import java.util.Arrays;
+import java.util.Objects;
 
 /**
- * 一个bean中，多个属性值具有一致性表现，
- * 必须同时为null或者同时为非null
+ * 一个 bean 中，多个属性值具有一致性表现，
+ * 必须同时为 null 或者同时为非 null.
  *
- * @author xiayx
+ * @author peace
  */
+@Slf4j
 public class ConsistencyValidator implements ConstraintValidator<Consistency, Object> {
-
-    private Logger logger = LoggerFactory.getLogger(getClass());
 
     private String[] propertyNames;
 
     @Override
-    public void initialize(Consistency constraintAnnotation) {
-        logger.info("初始化注解[{}]", constraintAnnotation);
-        this.propertyNames = constraintAnnotation.propertyNames();
+    public void initialize(Consistency annotation) {
+        this.propertyNames = Objects.requireNonNull(annotation.properties());
     }
 
     @Override
-    public boolean isValid(Object value, ConstraintValidatorContext context) {
-        logger.info("执行 Consistency 验证 For [{}]", value);
-        if (value == null) return true;
+    public boolean isValid(Object bean, ConstraintValidatorContext context) {
+        if (bean == null) return true;
 
-        Class<?> valueClass = value.getClass();
-        PropertyDescriptor[] descriptors = BeanUtils.getPropertyDescriptors(valueClass);
-        int nullCount = 0, propertyCount = 0;
-        for (PropertyDescriptor descriptor : descriptors) {
-            if (descriptor.getReadMethod() == null || descriptor.getWriteMethod() == null) continue;
-            if (propertyNames.length != 0 && Arrays.stream(propertyNames).noneMatch(propertyName -> propertyName.equals(descriptor.getName()))) continue;
-            propertyCount++;
-            Object propertyValue = ReflectionUtils.invokeMethod(descriptor.getReadMethod(), value);
-            logger.debug("取得属性[{}]的值为: {}", descriptor.getName(), propertyValue);
-            if (propertyValue == null) nullCount++;
-        }
-
+        long nullCount = Arrays.stream(propertyNames)
+                .map(propertyName -> BeanUtils.getPropertyValue(bean, propertyName))
+                .filter(Objects::isNull).count();
         context.buildConstraintViolationWithTemplate(context.getDefaultConstraintMessageTemplate())
                 .addBeanNode().inIterable().atIndex(1).addConstraintViolation();
 //                .addPropertyNode("[1,2,3]").addPropertyNode("mobile").addConstraintViolation();
-
-        logger.debug("取得 null 值的数目[{}]", nullCount);
-
-        return nullCount == 0 || nullCount == propertyCount;
+        return nullCount == 0 || nullCount == propertyNames.length;
     }
 
 }

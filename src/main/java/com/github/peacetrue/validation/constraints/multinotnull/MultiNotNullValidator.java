@@ -1,52 +1,53 @@
 package com.github.peacetrue.validation.constraints.multinotnull;
 
-import com.github.peacetrue.beans.BeanUtils;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import com.github.peacetrue.spring.beans.BeanUtils;
+import lombok.extern.slf4j.Slf4j;
+import org.springframework.util.ObjectUtils;
 import org.springframework.util.ReflectionUtils;
 
 import javax.validation.ConstraintValidator;
 import javax.validation.ConstraintValidatorContext;
-import java.beans.PropertyDescriptor;
 import java.util.Arrays;
+import java.util.stream.Stream;
+
+import static org.springframework.beans.BeanUtils.getPropertyDescriptors;
 
 /**
- * 验证一个对象的多个属性值至少有n个不能为null
+ * {@link MultiNotNull} 验证器。
  *
- * @author xiayx
+ * @author peace
  */
+@Slf4j
 public class MultiNotNullValidator implements ConstraintValidator<MultiNotNull, Object> {
 
-    protected Logger logger = LoggerFactory.getLogger(getClass());
-
-    private String[] propertyNames;
+    private String[] properties;
     private int count;
+    private boolean negative;
 
     @Override
-    public void initialize(MultiNotNull constraintAnnotation) {
-        logger.info("初始化注解[{}]", constraintAnnotation);
-        this.propertyNames = constraintAnnotation.propertyNames();
-        this.count = constraintAnnotation.count();
+    public void initialize(MultiNotNull annotation) {
+        log.trace("initialize MultiNotNull: '{}'", annotation);
+        this.properties = annotation.properties();
+        this.count = annotation.count();
+        this.negative = annotation.negative();
     }
 
     @Override
-    public boolean isValid(Object value, ConstraintValidatorContext context) {
-        logger.info("执行 MultiNotNull 验证 For [{}]", value);
-        if (value == null) return true;
-
-        Class<?> valueClass = value.getClass();
-        PropertyDescriptor[] descriptors = BeanUtils.getPropertyDescriptors(valueClass);
-        int notNullCount = 0;
-        for (PropertyDescriptor descriptor : descriptors) {
-            if (descriptor.getReadMethod() == null || descriptor.getWriteMethod() == null) continue;
-            if (propertyNames.length != 0 && Arrays.stream(propertyNames).noneMatch(propertyName -> propertyName.equals(descriptor.getName()))) continue;
-            Object propertyValue = ReflectionUtils.invokeMethod(descriptor.getReadMethod(), value);
-            logger.debug("取得属性[{}]的值为: {}", descriptor.getName(), propertyValue);
-            if (propertyValue != null) notNullCount++;
+    public boolean isValid(Object bean, ConstraintValidatorContext context) {
+        if (bean == null) return true;
+        if (negative) {
+            long notEmptyCount = Arrays.stream(getPropertyDescriptors(bean.getClass()))
+                    .filter(property -> !"class".equals(property.getName()) && property.getReadMethod() != null)
+                    .filter(property -> Stream.of(properties).noneMatch(item -> property.getName().equals(item)))
+                    .map(property -> ReflectionUtils.invokeMethod(property.getReadMethod(), bean))
+                    .filter(value -> !ObjectUtils.isEmpty(value)).count();
+            return notEmptyCount >= this.count;
         }
-        logger.debug("取得 not null 值的数目[{}]", notNullCount);
 
-        return notNullCount >= count;
+        long notEmptyCount = Arrays.stream(properties)
+                .map(propertyName -> BeanUtils.getPropertyValue(bean, propertyName))
+                .filter(item -> !ObjectUtils.isEmpty(item)).count();
+        return notEmptyCount >= this.count;
     }
 
 }

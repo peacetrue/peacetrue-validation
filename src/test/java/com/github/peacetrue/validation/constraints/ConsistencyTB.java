@@ -6,14 +6,11 @@ import lombok.Data;
 import javax.validation.Valid;
 
 /**
- * @author xiayx
+ * @author peace
  */
 //tag::class[]
 @Data
-@Consistency.List({
-        @Consistency,
-        @Consistency(propertyNames = {"id", "code", "expressCode"})
-})
+@Consistency(properties = {"id", "code", "expressCode"})
 public class ConsistencyTB {
 
     private String id;

@@ -6,14 +6,16 @@ import java.lang.annotation.Documented;
 import java.lang.annotation.Retention;
 import java.lang.annotation.Target;
 
-import static java.lang.annotation.ElementType.*;
+import static java.lang.annotation.ElementType.TYPE;
 import static java.lang.annotation.RetentionPolicy.RUNTIME;
 
 /**
- * 申明一个bean中，多个属性值具有一致性表现。
- * 必须同时为null或者同时为非null
+ * 申明一个 bean 中，多个属性值具有一致性表现。
+ * 必须同时为 {@code null} 或者同时为非 {@code null}。
+ * <p>
+ * 例如：地址为选填，但如果选了省份，必须选择市区。
  *
- * @author xiayx
+ * @author peace
  */
 @Target(TYPE)
 @Retention(RUNTIME)
@@ -21,21 +23,20 @@ import static java.lang.annotation.RetentionPolicy.RUNTIME;
 @Constraint(validatedBy = {ConsistencyValidator.class})
 public @interface Consistency {
 
+    /**
+     * 属性名数组
+     *
+     * @return 属性名数组
+     */
+    String[] properties();
+
     String message() default "{com.github.peacetrue.validation.constraints.Consistency.message}";
 
     Class<?>[] groups() default {};
 
     Class<? extends Payload>[] payload() default {};
 
-    /** 属性名，不传默认为该bean下的所有属性，无效的属性会被忽略 */
-    String[] propertyNames() default {};
-
-    /**
-     * Defines several <code>@Consistency</code> annotations on the same element
-     *
-     * @author xiayx
-     * @see Consistency
-     */
+    /** 同一个元素上可重复声明 {@link Consistency}。 */
     @Target(TYPE)
     @Retention(RUNTIME)
     @Documented

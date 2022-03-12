@@ -1,159 +1,18 @@
-plugins {
-    id "java-library"
-    id "maven-publish"
-    id "signing"
-    id "idea"
-    id "io.spring.dependency-management" version "1.0.8.RELEASE"
+group "com.github.peacetrue"
+version "1.0.0-SNAPSHOT"
+description "提供验证扩展支持"
+dependencies {
+    compileOnly "org.slf4j:slf4j-api"
+    compileOnly "javax.validation:validation-api"
+    compileOnly "org.springframework:spring-beans"
+    compileOnly "com.alibaba:fastjson:1.2.79"
+    implementation "com.github.peacetrue.spring:peacetrue-spring-beans"
+//    compileOnly "com.fasterxml.jackson.core:jackson-databind"
+    testImplementation "org.hibernate:hibernate-validator"
+    testImplementation "org.apache.tomcat.embed:tomcat-embed-el"
+    testImplementation "org.springframework.boot:spring-boot-starter-test"
+    testImplementation "org.springframework.boot:spring-boot-starter-validation"
+    testImplementation "org.springframework.boot:spring-boot-starter-web"
+    testImplementation "org.springframework.boot:spring-boot-starter-logging"
+    testImplementation "com.alibaba:fastjson:1.2.79"
 }
-
-allprojects { project ->
-
-    group "com.github.peacetrue"
-    version "2.0.0-SNAPSHOT"
-    description "提供验证扩展支持"
-
-    apply plugin: "java"
-    apply plugin: "java-library"
-    sourceCompatibility = 1.8
-
-    repositories {
-        maven { url "https://oss.sonatype.org/content/repositories/snapshots/" }
-        mavenCentral()
-    }
-
-    apply plugin: "idea"
-    idea {
-        module {
-            inheritOutputDirs = false
-            outputDir = tasks.compileJava.destinationDir
-            testOutputDir = tasks.compileTestJava.destinationDir
-            downloadSources = true
-            downloadJavadoc = false
-        }
-    }
-
-    apply plugin: "io.spring.dependency-management"
-    dependencyManagement {
-        imports {
-            mavenBom "org.springframework.boot:spring-boot-dependencies:2.1.8.RELEASE"
-            mavenBom "com.github.peacetrue:peacetrue-dependencies:2.0.0-SNAPSHOT"
-        }
-    }
-
-    dependencies {
-        compileOnly "org.projectlombok:lombok"
-        annotationProcessor "org.projectlombok:lombok"
-        api("com.google.code.findbugs:jsr305")
-
-        testImplementation "junit:junit"
-        testCompileOnly "org.projectlombok:lombok"
-        testAnnotationProcessor "org.projectlombok:lombok"
-    }
-
-    dependencies {
-
-        api "org.slf4j:slf4j-api"
-        api "javax.validation:validation-api:2.0.1.Final"
-        implementation "org.hibernate:hibernate-validator:6.0.7.Final"
-        implementation "org.apache.tomcat.embed:tomcat-embed-el"
-        implementation "org.hibernate.javax.persistence:hibernate-jpa-2.1-api:1.0.2.Final"
-        implementation "org.springframework:spring-beans"//StringUtils
-
-        testImplementation "junit:junit"
-        testImplementation "org.springframework:spring-test"
-        testImplementation "org.springframework.boot:spring-boot-starter-test"
-        testImplementation "org.springframework.boot:spring-boot-starter-validation"
-        testImplementation "org.springframework:spring-webmvc"
-        testImplementation "ch.qos.logback:logback-classic"
-        testImplementation "javax.servlet:javax.servlet-api"
-        testCompileOnly "org.projectlombok:lombok"
-        testAnnotationProcessor "org.projectlombok:lombok"
-    }
-
-    task antoraCopySourceToExample() {
-        doLast {
-            def path = "${rootDir.path}/docs/antora/modules/ROOT/examples/${project.name}"
-            delete {
-                delete(path)
-            }
-            copy {
-                from sourceSets.main.allSource into(path)
-            }
-            copy {
-                from sourceSets.test.allSource into(path)
-            }
-        }
-    }
-
-    task sourcesJar(type: Jar) {
-        archiveClassifier = "sources"
-        from sourceSets.main.allJava
-    }
-
-    task javadocJar(type: Jar) {
-        archiveClassifier = "javadoc"
-        from javadoc.destinationDir
-    }
-
-    def repository_snapshots = "https://oss.sonatype.org/content/repositories/snapshots/"
-    def repository_releases = "https://oss.sonatype.org/service/local/staging/deploy/maven2/"
-
-    apply plugin: "maven-publish"
-    apply plugin: "signing"
-    publishing {
-        publications {
-            mavenJava(MavenPublication) {
-                pom {
-                    name = project.name
-                    description = project.description
-                    url = "https://github.com/peacetrue/${project.name}"
-                    licenses {
-                        license {
-                            name = "The Apache License, Version 2.0"
-                            url = "http://www.apache.org/licenses/LICENSE-2.0.txt"
-                        }
-                    }
-                    developers {
-                        developer {
-                            id = "xiayouxue"
-                            name = "xiayouxue"
-                            email = "xiayouxue@hotmail.com"
-                        }
-                    }
-                    scm {
-                        connection = "https://github.com/peacetrue/${project.name}.git"
-                        developerConnection = "https://github.com/peacetrue/${project.name}.git"
-                        url = "https://github.com/peacetrue/peacetrue/${project.name}"
-                    }
-                }
-
-                from components.java
-
-                artifact sourcesJar
-                artifact javadocJar
-            }
-        }
-
-        repositories {
-            maven {
-                url version.endsWith("SNAPSHOT") ? repository_snapshots : repository_releases
-                credentials {
-                    username = ossrhUsername
-                    password = ossrhPassword
-                }
-            }
-        }
-    }
-
-    signing {
-        sign publishing.publications.mavenJava
-    }
-
-}
-
-
-
-
-
-
-

@@ -3,6 +3,7 @@
 基于 https://github.com/yiminghe/async-validator[Async Validator^] 的扩展，提供更多的特性支持。
 
 == 验证规则
+
 验证规则包括如下方法：
 
 * 注册验证规则
@@ -13,7 +14,7 @@
 
 === 自定义验证规则
 
-[source%nowrap,javascript]
+[source,javascript]
 ----
 let Rules = require('./src/rules');
 //注册验证规则
@@ -57,7 +58,8 @@ let validator = new Validator(descriptor);
 ----
 
 === 错误描述国际化
-[source%nowrap,javascript]
+
+[source,javascript]
 ----
 let Rules = require('./src/rules');
 //不设置语言，默认为中文
@@ -67,10 +69,10 @@ Rules.setLang=function(lang){
 ----
 
 === 设置本地化字段
-默认情况下，会直接提示英文字段名，比如说：name 必须是唯一的，
-你可以通过``Rules.setField``为其设置字段描述：
 
-[source%nowrap,javascript]
+默认情况下，会直接提示英文字段名，比如说：name 必须是唯一的， 你可以通过``Rules.setField``为其设置字段描述：
+
+[source,javascript]
 ----
 let Rules = require('./src/rules');
 //不设置直接展示字段名，设置后展示字段描述
@@ -86,14 +88,15 @@ Rules.setFields=function(names){
 }
 ----
 
-
 === requires
+
 多个属性中至少有一个有值，有值指不为``null`` 或者 ``undefined`` 或者 ``""``。
 
 关于起名：required 已经被占用了，requireds 不是一个有效单词，所以使用了 requires。
 
 应用于对象上，示例如下：
-[source%nowrap,javascript]
+
+[source,javascript]
 ----
 {requires:{
     fields:Array,//指定哪些属性必须至少有一个
@@ -102,13 +105,14 @@ Rules.setFields=function(names){
 ----
 
 === requiredIf
-如果属性source有值，则属性target必须有值；
-属性source无值，则属性target可以有值也可以无值。
+
+如果属性source有值，则属性target必须有值； 属性source无值，则属性target可以有值也可以无值。
 
 //sync:Boolean,//是否同步，为true则属性target无值时，属性source也必须无值，默认为false。
 
 应用于对象上，示例如下：
-[source%nowrap,javascript]
+
+[source,javascript]
 ----
 {requiredIf:{
     source:String,//属性source
@@ -117,12 +121,13 @@ Rules.setFields=function(names){
 }}
 ----
 
-
 === unique
+
 属性在数据库中必须是唯一的。
 
 应用于属性上，示例如下：
-[source%nowrap,javascript]
+
+[source,javascript]
 ----
 {unique:{
     url:String,//链接地址
@@ -137,15 +142,15 @@ Rules.setFields=function(names){
     message:String,//错误描述，默认值为："{_field}必须是唯一的"
 }}
 ----
+
 请求出错后，无法得到有效验证结果，忽略此次验证。
 
 == 中文错误描述
-因为内置的错误描述不支持中文，
-原本是可以通过``AsyncValidator.messages``设置本地错误描述的，
-与 iview 集成后，iview 没有提供相应的接口：
+
+因为内置的错误描述不支持中文， 原本是可以通过``AsyncValidator.messages``设置本地错误描述的， 与 iview 集成后，iview 没有提供相应的接口：
 
 .iview/src/components/form/form-item.vue[193,206]
-[source%nowrap,javascript]
+[source,javascript]
 ----
 let descriptor = {};
 descriptor[this.prop] = rules;
@@ -163,10 +168,9 @@ validator.validate(model, { firstFields: true }, errors => {
 });
 ----
 
-只能在验证时，提供错误描述；
-总是手写错误描述过于繁琐，所以提供了一个错误描述生成器：
+只能在验证时，提供错误描述； 总是手写错误描述过于繁琐，所以提供了一个错误描述生成器：
 
-[source%nowrap,javascript]
+[source,javascript]
 ----
 let Message = require('../src/message_generator');
 
@@ -192,12 +196,11 @@ Message.generate(descriptor);
 
 ----
 
-
 == 字段名本地化
-默认情况下，会提示 name 不是一个 字符串，
-如果要将 name 也本地化，在生成时需要提供字段名的本地化描述。
 
-[source%nowrap,javascript]
+默认情况下，会提示 name 不是一个 字符串， 如果要将 name 也本地化，在生成时需要提供字段名的本地化描述。
+
+[source,javascript]
 ----
 let Message = require('../src/message_generator');
 

@@ -4,15 +4,15 @@
 site:
   title: 真实安宁
   url: https://peacetrue.github.io
-  start_page: peacetrue-validation::index.adoc
+  start_page: peacetrue-validation::validation-principle.adoc
 content:
   branches: master
   sources:
-  - url: ../../
-    start_path: ./docs/antora
+    - url: ../../
+      start_path: ./docs/antora
 asciidoc:
   attributes:
-#    linkattrs: ''
+    #    linkattrs: ''
     toc: ~
 ui:
   bundle:
@@ -20,7 +20,7 @@ ui:
     snapshot: true
   supplemental_files: ../../../peacetrue.github.io/docs/supplemental-ui
 output:
-#  clean: true
+  #  clean: true
   dir: ../../build/antora
 #  destinations:
 #    - provider: archive

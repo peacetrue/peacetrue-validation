@@ -1,10 +1,8 @@
 = Bean Validation
 
-【Bean Validation】是一个java实现的验证框架接口，
-官网地址为 https://beanvalidation.org/[^]。
+【Bean Validation】是一个java实现的验证框架接口， 官网地址为 https://beanvalidation.org/[^]。
 
-【hibernate validator】是【Bean Validation】的一种实现，
- 官网地址为 http://hibernate.org/validator/[^]。
+【hibernate validator】是【Bean Validation】的一种实现， 官网地址为 http://hibernate.org/validator/[^]。
 
 
 
