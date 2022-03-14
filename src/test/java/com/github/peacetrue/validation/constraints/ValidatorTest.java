@@ -1,100 +1,196 @@
 package com.github.peacetrue.validation.constraints;
 
+import lombok.extern.slf4j.Slf4j;
+import org.hibernate.validator.HibernateValidator;
+import org.hibernate.validator.messageinterpolation.ResourceBundleMessageInterpolator;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 
 import javax.validation.ConstraintViolation;
 import javax.validation.Validation;
 import javax.validation.Validator;
+import java.util.Arrays;
+import java.util.Locale;
 import java.util.Set;
 
 /**
  * @author peace
  */
+@Slf4j
 class ValidatorTest {
 
-    private final Validator validator = Validation.buildDefaultValidatorFactory().getValidator();
+    private static final Validator VALIDATOR = Validation.buildDefaultValidatorFactory().getValidator();
+
+    private static Validator getValidator(boolean failFast, Locale locale) {
+        return Validation
+                .byProvider(HibernateValidator.class)
+                .configure()
+                //how to config failFast
+                .failFast(failFast)
+                //how to config lang
+                .messageInterpolator(new ResourceBundleMessageInterpolator() {
+                    @Override
+                    public String interpolate(String message, Context context) {
+                        return super.interpolate(message, context, locale);
+                    }
+                })
+                .buildValidatorFactory().getValidator();
+    }
 
     @Test
     void multiNotNull() {
-        MultiNotNullTB multiNotNullTB = new MultiNotNullTB();
-        Set<ConstraintViolation<MultiNotNullTB>> violations = validator.validate(multiNotNullTB);
+        MultiNotNullTestBean testBean = new MultiNotNullTestBean();
+        Set<ConstraintViolation<MultiNotNullTestBean>> violations = VALIDATOR.validate(testBean);
         Assertions.assertEquals(2, violations.size());
-        System.out.println(violations);
 
-        multiNotNullTB.setCode("22");
-        violations = validator.validate(multiNotNullTB);
+        testBean = new MultiNotNullTestBean().setId("22");
+        violations = VALIDATOR.validate(testBean);
+        Assertions.assertEquals(1, violations.size());
+
+        testBean = new MultiNotNullTestBean().setCode("22");
+        violations = VALIDATOR.validate(testBean);
         Assertions.assertEquals(0, violations.size());
     }
 
     @Test
     void consistency() {
-        ConsistencyTB consistencyTB = new ConsistencyTB();
-        Set<ConstraintViolation<ConsistencyTB>> violations = validator.validate(consistencyTB);
+        ConsistencyTestBean testBean = new ConsistencyTestBean();
+        Set<ConstraintViolation<ConsistencyTestBean>> violations = VALIDATOR.validate(testBean);
         Assertions.assertEquals(0, violations.size());
 
-        consistencyTB.setCode("22");
-        violations = validator.validate(consistencyTB);
-        Assertions.assertEquals(2, violations.size());
+        testBean = new ConsistencyTestBean().setCode("22");
+        violations = VALIDATOR.validate(testBean);
+        Assertions.assertEquals(1, violations.size());
     }
 
     @Test
     void in() {
-        InTB inTB = new InTB();
-        Set<ConstraintViolation<InTB>> violations = validator.validate(inTB);
+        InTestBean bean = new InTestBean().setIn("0");
+        Set<ConstraintViolation<InTestBean>> violations = VALIDATOR.validate(bean);
         Assertions.assertEquals(1, violations.size());
 
-        inTB.setName("x0");
-        violations = validator.validate(inTB);
-        Assertions.assertEquals(1, violations.size());
-
-        inTB.setName("x1");
-        violations = validator.validate(inTB);
+        bean = new InTestBean().setIn("1");
+        violations = VALIDATOR.validate(bean);
         Assertions.assertEquals(0, violations.size());
 
-        inTB.setName("x2");
-        violations = validator.validate(inTB);
+        bean = new InTestBean().setNotIn("1");
+        violations = VALIDATOR.validate(bean);
+        Assertions.assertEquals(1, violations.size());
+
+        bean = new InTestBean().setNotIn("0");
+        violations = VALIDATOR.validate(bean);
         Assertions.assertEquals(0, violations.size());
 
-        inTB.setName("x3");
-        violations = validator.validate(inTB);
+        bean = new InTestBean().setIns(Arrays.asList("0", "2"));
+        violations = VALIDATOR.validate(bean);
         Assertions.assertEquals(1, violations.size());
 
-        inTB.setName("x1");
-        inTB.setJson("x3");
-        violations = validator.validate(inTB);
+        bean = new InTestBean().setIns(Arrays.asList("1", "2"));
+        violations = VALIDATOR.validate(bean);
+        Assertions.assertEquals(0, violations.size());
+
+        bean = new InTestBean().setNotIns(Arrays.asList("0", "1"));
+        violations = VALIDATOR.validate(bean);
         Assertions.assertEquals(1, violations.size());
 
-        inTB.setJson("{\"a\":\"a\"}");
-        violations = validator.validate(inTB);
+        bean = new InTestBean().setNotIns(Arrays.asList("0", "3"));
+        violations = VALIDATOR.validate(bean);
         Assertions.assertEquals(0, violations.size());
     }
 
     @Test
     void unique() {
-        Set<ConstraintViolation<TestBean>> violations;
-        TestBean testBean = new TestBean();
-        testBean.setId("1");
-        testBean.setName("name");
-        violations = validator.validate(testBean);
+        UniqueTestBean testBean = new UniqueTestBean().setId("1").setName("name");
+        Set<ConstraintViolation<UniqueTestBean>> violations = VALIDATOR.validate(testBean);
         Assertions.assertEquals(1, violations.size());
+
+        testBean = new UniqueTestBean().setName("name");
+        violations = VALIDATOR.validate(testBean);
+        Assertions.assertEquals(0, violations.size());
     }
 
     @Test
     void totalLength() {
-        Set<ConstraintViolation<TestBean>> violations;
-        TestBean testBean = new TestBean();
-        testBean.setScopes(new String[]{"1"});
-        violations = validator.validate(testBean);
+        Set<ConstraintViolation<TotalLengthTestBean>> violations;
+        TotalLengthTestBean testBean = new TotalLengthTestBean().setTotalLength(new String[]{"1"});
+        violations = VALIDATOR.validate(testBean);
         Assertions.assertEquals(1, violations.size());
 
-        testBean.setScopes(new String[]{"11", "222"});
-        violations = validator.validate(testBean);
+        testBean = new TotalLengthTestBean().setTotalLength(new String[]{"11", "222"});
+        violations = VALIDATOR.validate(testBean);
         Assertions.assertEquals(0, violations.size());
 
-        testBean.setScopes(new String[]{"1111111", "221112"});
-        violations = validator.validate(testBean);
-        System.out.println(violations);
+        testBean = new TotalLengthTestBean().setTotalLength(new String[]{"1111111", "221112"});
+        violations = VALIDATOR.validate(testBean);
         Assertions.assertEquals(1, violations.size());
+    }
+
+    @Test
+    void requiredWhen() {
+        Set<ConstraintViolation<RequiredWhenTestBean>> violations;
+        RequiredWhenTestBean testBean
+                = new RequiredWhenTestBean().setRequired(null).setRequiredCondition("true");
+        violations = VALIDATOR.validate(testBean);
+        Assertions.assertEquals(1, violations.size());
+
+        testBean
+                = new RequiredWhenTestBean();
+        violations = VALIDATOR.validate(testBean);
+        Assertions.assertEquals(0, violations.size());
+    }
+
+    @Test
+    void json() {
+        Set<ConstraintViolation<JsonTestBean>> violations;
+        JsonTestBean testBean;
+
+        testBean = new JsonTestBean().setJson("a");
+        violations = VALIDATOR.validate(testBean);
+        Assertions.assertEquals(1, violations.size());
+
+        testBean = new JsonTestBean().setJsonValue("a");
+        violations = VALIDATOR.validate(testBean);
+        Assertions.assertEquals(1, violations.size());
+
+        testBean = new JsonTestBean().setJsonValue("1");
+        violations = VALIDATOR.validate(testBean);
+        Assertions.assertEquals(0, violations.size());
+
+        testBean = new JsonTestBean().setJsonArray("a");
+        violations = VALIDATOR.validate(testBean);
+        Assertions.assertEquals(1, violations.size());
+
+        testBean = new JsonTestBean().setJsonArray("[]");
+        violations = VALIDATOR.validate(testBean);
+        Assertions.assertEquals(0, violations.size());
+
+        testBean = new JsonTestBean().setJsonObject("a");
+        violations = VALIDATOR.validate(testBean);
+        Assertions.assertEquals(1, violations.size());
+
+        testBean = new JsonTestBean().setJsonObject("{}");
+        violations = VALIDATOR.validate(testBean);
+        Assertions.assertEquals(0, violations.size());
+    }
+
+    @Test
+    void locale() {
+        Set<ConstraintViolation<JsonTestBean>> violations;
+        JsonTestBean testBean = new JsonTestBean().setJson("a");
+
+        violations = VALIDATOR.validate(testBean);
+        Assertions.assertEquals(1, violations.size());
+        Assertions.assertEquals(
+                "必须是一个有效的 JSON 字符串",
+                violations.iterator().next().getMessage()
+        );
+
+        Validator VALIDATOR = getValidator(true, Locale.ENGLISH);
+        violations = VALIDATOR.validate(testBean);
+        Assertions.assertEquals(1, violations.size());
+        Assertions.assertEquals(
+                "must be JSON string",
+                violations.iterator().next().getMessage()
+        );
     }
 }

@@ -10,17 +10,17 @@ import static java.lang.annotation.ElementType.TYPE;
 import static java.lang.annotation.RetentionPolicy.RUNTIME;
 
 /**
- * 申明一个 bean 中，多个属性值具有一致性表现。
- * 必须同时为 {@code null} 或者同时为非 {@code null}。
+ * 标注在类上，声明多个属性值具有一致性表现。
+ * 必须同时为空或者同时为非空。
  * <p>
- * 例如：地址为选填，但如果选了省份，必须选择市区。
+ * 例如：地址为选填，但如果选了省份，必须选择市区，不选身份也无法选择市区。
  *
  * @author peace
  */
 @Target(TYPE)
 @Retention(RUNTIME)
 @Documented
-@Constraint(validatedBy = {ConsistencyValidator.class})
+@Constraint(validatedBy = ConsistencyValidator.class)
 public @interface Consistency {
 
     /**

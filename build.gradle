@@ -1,18 +1,17 @@
 group "com.github.peacetrue"
-version "1.0.0-SNAPSHOT"
+version "${peaceValidationVersion}${tailSnapshot}"
 description "提供验证扩展支持"
+
 dependencies {
     compileOnly "org.slf4j:slf4j-api"
     compileOnly "javax.validation:validation-api"
     compileOnly "org.springframework:spring-beans"
+    compileOnly "org.springframework:spring-expression"
     compileOnly "com.alibaba:fastjson:1.2.79"
     implementation "com.github.peacetrue.spring:peacetrue-spring-beans"
-//    compileOnly "com.fasterxml.jackson.core:jackson-databind"
     testImplementation "org.hibernate:hibernate-validator"
     testImplementation "org.apache.tomcat.embed:tomcat-embed-el"
-    testImplementation "org.springframework.boot:spring-boot-starter-test"
-    testImplementation "org.springframework.boot:spring-boot-starter-validation"
-    testImplementation "org.springframework.boot:spring-boot-starter-web"
-    testImplementation "org.springframework.boot:spring-boot-starter-logging"
     testImplementation "com.alibaba:fastjson:1.2.79"
+    testImplementation "org.springframework:spring-beans"
+    testImplementation "org.springframework:spring-expression"
 }

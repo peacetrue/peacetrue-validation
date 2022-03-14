@@ -9,7 +9,7 @@ import static java.lang.annotation.ElementType.METHOD;
 import static java.lang.annotation.RetentionPolicy.RUNTIME;
 
 /**
- * 标记在字符串类型的集合属性上，
+ * 标注在字符串类型的集合属性上，
  * 可以是 {@code String[]} 或者 {@code Collection<String>}。
  * 以指定分隔符合并字符串集合，
  * 验证其总长度不得大于指定值。

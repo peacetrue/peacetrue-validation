@@ -1,0 +1,9 @@
+= 简介
+
+//@formatter:off
+*peacetrue-validation* 项目用于扩展 `validation-api` 验证框架，提供更多验证注解。
+
+== 参考
+
+* https://beanvalidation.org
+* http://hibernate.org/validator/

@@ -13,7 +13,7 @@ import static java.lang.annotation.RetentionPolicy.RUNTIME;
 
 /**
  * 申明一个 Bean 中，多个属性值不能同时为空，
- * 为空判断逻辑为 {@link ObjectUtils#isEmpty(Object)}。
+ * 为空判断逻辑使用 {@link ObjectUtils#isEmpty(Object)}。
  * <p>
  * 使用场景：
  * 新增时，手机号和邮箱不能同时为空；
@@ -24,7 +24,7 @@ import static java.lang.annotation.RetentionPolicy.RUNTIME;
 @Target(TYPE)
 @Retention(RUNTIME)
 @Documented
-@Constraint(validatedBy = {MultiNotNullValidator.class})
+@Constraint(validatedBy = MultiNotNullValidator.class)
 public @interface MultiNotNull {
 
     /**
@@ -44,7 +44,7 @@ public @interface MultiNotNull {
     /**
      * 是否取反，正向判断属性过多时，可使用反向判断。
      *
-     * @return true 表示不在指定范围内的其他属性必须不能同时为空
+     * @return true 表示一个 Bean 中不在指定范围内的其他属性必须不能同时为空
      */
     boolean negative() default false;
 
