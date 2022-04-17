@@ -31,7 +31,7 @@ public @interface RequiredWhen {
 
     /**
      * 指定依赖属性需要满足的条件，
-     * 需要使用 SPEL 表达式，
+     * 需要使用 SpeL 表达式，
      * Root 对象为当前注解所标注类的实例，可以使用其中的所有属性。
      * <p>
      * 例如：证件类型为身份证，type=='ID'。
