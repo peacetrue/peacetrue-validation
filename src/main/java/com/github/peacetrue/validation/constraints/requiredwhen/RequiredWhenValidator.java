@@ -12,7 +12,7 @@ import javax.validation.ConstraintValidator;
 import javax.validation.ConstraintValidatorContext;
 
 /**
- * {@link RequiredWhen} 验证器。避免和 {@link JSONValidator} 重名。
+ * {@link RequiredWhen} 验证器。
  *
  * @author peace
  */

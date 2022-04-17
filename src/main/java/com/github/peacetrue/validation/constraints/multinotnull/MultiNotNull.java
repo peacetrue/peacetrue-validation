@@ -1,6 +1,5 @@
 package com.github.peacetrue.validation.constraints.multinotnull;
 
-import com.github.peacetrue.validation.constraints.consistency.Consistency;
 import org.springframework.util.ObjectUtils;
 
 import javax.validation.Constraint;

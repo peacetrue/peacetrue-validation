@@ -14,7 +14,7 @@ import static java.lang.annotation.RetentionPolicy.RUNTIME;
  * 标注在类上，声明多个属性值具有一致性表现。
  * 必须同时为空或者同时为非空。
  * <p>
- * 例如：地址为选填，但如果选了省份，必须选择市区，不选身份也无法选择市区。
+ * 例如：地址为选填，但如果选了省份，必须选择市区，不选省份也无法选择市区。
  *
  * @author peace
  */

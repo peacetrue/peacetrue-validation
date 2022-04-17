@@ -1,7 +1,5 @@
 package com.github.peacetrue.validation.constraints.totallength;
 
-import com.github.peacetrue.validation.constraints.requiredwhen.RequiredWhen;
-
 import javax.validation.Constraint;
 import javax.validation.Payload;
 import java.lang.annotation.*;
