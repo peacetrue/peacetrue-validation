@@ -3,6 +3,7 @@ package com.github.peacetrue.validation.constraints.consistency;
 import javax.validation.Constraint;
 import javax.validation.Payload;
 import java.lang.annotation.Documented;
+import java.lang.annotation.Repeatable;
 import java.lang.annotation.Retention;
 import java.lang.annotation.Target;
 
@@ -21,6 +22,7 @@ import static java.lang.annotation.RetentionPolicy.RUNTIME;
 @Retention(RUNTIME)
 @Documented
 @Constraint(validatedBy = ConsistencyValidator.class)
+@Repeatable(Consistency.List.class)
 public @interface Consistency {
 
     /**

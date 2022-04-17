@@ -1,5 +1,7 @@
 package com.github.peacetrue.validation.constraints.totallength;
 
+import com.github.peacetrue.validation.constraints.requiredwhen.RequiredWhen;
+
 import javax.validation.Constraint;
 import javax.validation.Payload;
 import java.lang.annotation.*;
@@ -21,6 +23,7 @@ import static java.lang.annotation.RetentionPolicy.RUNTIME;
 @Target({ElementType.FIELD, ElementType.METHOD})
 @Retention(RetentionPolicy.RUNTIME)
 @Constraint(validatedBy = TotalLengthValidator.class)
+@Repeatable(TotalLength.List.class)
 public @interface TotalLength {
 
     /**

@@ -9,7 +9,7 @@ dependencies {
     compileOnly "org.springframework:spring-expression"
     compileOnly "com.alibaba:fastjson:1.2.79"
     implementation "com.github.peacetrue.spring:peacetrue-spring-beans"
-    testImplementation "org.hibernate:hibernate-validator"
+    testImplementation "org.springframework.boot:spring-boot-starter-validation"
     testImplementation "org.apache.tomcat.embed:tomcat-embed-el"
     testImplementation "com.alibaba:fastjson:1.2.79"
     testImplementation "org.springframework:spring-beans"

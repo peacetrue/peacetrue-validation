@@ -9,7 +9,7 @@ import java.util.ResourceBundle;
 /**
  * @author peace
  **/
-public class ResourceBundleTest {
+class ResourceBundleTest {
 
     /** 如果指定的语言不存在，不会去找默认方言，而是找了本地语言 */
     @Test

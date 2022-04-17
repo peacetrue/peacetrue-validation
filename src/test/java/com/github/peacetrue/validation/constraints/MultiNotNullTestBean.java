@@ -6,10 +6,8 @@ import lombok.Getter;
 /**
  * @author peace
  **/
-@MultiNotNull.List({
-        @MultiNotNull(properties = {"id", "code", "name"}),
-        @MultiNotNull(properties = {"id"}, negative = true)
-})
+@MultiNotNull(properties = {"id", "code", "name"})
+@MultiNotNull(properties = {"id"}, negative = true)
 @Getter
 public class MultiNotNullTestBean {
 

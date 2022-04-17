@@ -1,5 +1,7 @@
 package com.github.peacetrue.validation.constraints.requiredwhen;
 
+import com.github.peacetrue.validation.constraints.multinotnull.MultiNotNull;
+
 import javax.validation.Constraint;
 import javax.validation.Payload;
 import java.lang.annotation.*;
@@ -19,6 +21,7 @@ import static java.lang.annotation.RetentionPolicy.RUNTIME;
 @Target({ElementType.TYPE})
 @Retention(RetentionPolicy.RUNTIME)
 @Constraint(validatedBy = RequiredWhenValidator.class)
+@Repeatable(RequiredWhen.List.class)
 public @interface RequiredWhen {
 
     /**

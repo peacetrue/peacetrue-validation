@@ -7,3 +7,7 @@
 基于 `validation-api:1.1.0.Final` 提供 7 个常用验证注解。
 
 `RequiredWhen` 依赖于 `spring-expression` 做表达式解析。
+
+== 1.0.1
+
+使用 `@Repeatable` `@List`，修复可重复的验证注解。
