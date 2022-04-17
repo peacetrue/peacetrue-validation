@@ -7,11 +7,11 @@ dependencies {
     compileOnly "javax.validation:validation-api"
     compileOnly "org.springframework:spring-beans"
     compileOnly "org.springframework:spring-expression"
-    compileOnly "com.alibaba:fastjson:1.2.79"
+    compileOnly "com.alibaba:fastjson"
     implementation "com.github.peacetrue.spring:peacetrue-spring-beans"
     testImplementation "org.springframework.boot:spring-boot-starter-validation"
     testImplementation "org.apache.tomcat.embed:tomcat-embed-el"
-    testImplementation "com.alibaba:fastjson:1.2.79"
+    testImplementation "com.alibaba:fastjson"
     testImplementation "org.springframework:spring-beans"
     testImplementation "org.springframework:spring-expression"
 }
