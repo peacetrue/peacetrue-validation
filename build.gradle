@@ -8,7 +8,10 @@ dependencies {
     compileOnly "org.springframework:spring-beans"
     compileOnly "org.springframework:spring-expression"
     compileOnly "com.alibaba:fastjson"
+    implementation "com.github.peacetrue:peacetrue-common"
     implementation "com.github.peacetrue.spring:peacetrue-spring-beans"
+
+    testImplementation "com.github.peacetrue:peacetrue-common"
     testImplementation "org.springframework.boot:spring-boot-starter-validation"
     testImplementation "org.apache.tomcat.embed:tomcat-embed-el"
     testImplementation "com.alibaba:fastjson"

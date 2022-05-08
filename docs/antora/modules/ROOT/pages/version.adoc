@@ -11,3 +11,11 @@
 == 1.0.1
 
 使用 `@Repeatable` `@List`，修复可重复的验证注解。
+
+== 1.1.0
+
+添加文件相关校验注解：
+
+. AbsolutePath：绝对路径校验规则
+. RelativePath：相对路径校验规则
+. FileExistence：文件存在性校验规则
