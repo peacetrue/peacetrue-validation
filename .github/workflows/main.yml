@@ -28,7 +28,7 @@ jobs:
 
 #https://foresight.thundra.io/start/integrate-github-test-runs
     - name: Foresight Test Report Uploader
-      if: success()
+#      if: success()
       uses: actions/upload-artifact@v2
       with:
         name: test-result-junit
