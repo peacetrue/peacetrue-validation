@@ -1,6 +1,10 @@
 name: peacetrue-validation
 title: 验证扩展
 version: master
+asciidoc:
+  attributes:
+    numbered: '@'
+    app-name: peacetrue-validation
 start_page: index.adoc
 nav:
   - modules/ROOT/nav.adoc
