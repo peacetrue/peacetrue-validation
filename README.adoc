@@ -1,6 +1,6 @@
 = 验证扩展
-peace
-v1.0, 2019-06-10: SNAPSHOT
+peace <xiayouxue@hotmail.com>
+v1.0, 2022-06-29: RELEASE
 :app-name: peacetrue-validation
 :foresight-repoId: 7ea26852-ae34-48b6-99f1-4995704437ab
 
