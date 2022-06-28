@@ -26,7 +26,7 @@ public class FileExistenceValidator implements ConstraintValidator<FileExistence
     @Override
     public boolean isValid(Object value, ConstraintValidatorContext context) {
         log.trace("validate value '{}'", value);
-        return value == null || RelativePathValidator.test(value, this::exists);
+        return value == null || this.exists(value);
     }
 
     private boolean exists(Object value) {

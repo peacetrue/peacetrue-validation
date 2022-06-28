@@ -1,3 +1,7 @@
+plugins {
+    id "com.github.peacetrue.gradle.build-convention" version "${peaceGradleVersion}${tailSnapshot}"
+}
+
 group "com.github.peacetrue"
 version "${peaceValidationVersion}${tailSnapshot}"
 description "提供验证扩展支持"

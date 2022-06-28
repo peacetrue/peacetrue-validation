@@ -4,8 +4,6 @@ import javax.validation.Constraint;
 import javax.validation.Payload;
 import java.lang.annotation.*;
 
-import static java.lang.annotation.ElementType.FIELD;
-import static java.lang.annotation.ElementType.METHOD;
 import static java.lang.annotation.RetentionPolicy.RUNTIME;
 
 /**
@@ -23,7 +21,7 @@ import static java.lang.annotation.RetentionPolicy.RUNTIME;
  *
  * @author peace
  */
-@Target({ElementType.TYPE, ElementType.FIELD, ElementType.METHOD})
+@Target({ElementType.FIELD, ElementType.METHOD, ElementType.PARAMETER, ElementType.TYPE_USE})
 @Retention(RetentionPolicy.RUNTIME)
 @Constraint(validatedBy = UniqueValidator.class)
 @Repeatable(Unique.List.class)
@@ -57,7 +55,7 @@ public @interface Unique {
     Class<? extends Payload>[] payload() default {};
 
     /** 同一个元素上可重复声明 {@link Unique} */
-    @Target({METHOD, FIELD})
+    @Target({ElementType.FIELD, ElementType.METHOD, ElementType.PARAMETER, ElementType.TYPE_USE})
     @Retention(RUNTIME)
     @Documented
     @interface List {

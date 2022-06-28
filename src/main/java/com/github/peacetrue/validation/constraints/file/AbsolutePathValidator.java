@@ -22,7 +22,7 @@ public class AbsolutePathValidator implements ConstraintValidator<AbsolutePath, 
     @Override
     public boolean isValid(Object value, ConstraintValidatorContext context) {
         log.trace("validate value '{}'", value);
-        return value == null || RelativePathValidator.test(value, this::isAbsolute);
+        return value == null || this.isAbsolute(value);
     }
 
     private boolean isAbsolute(Object value) {

@@ -4,21 +4,18 @@ import javax.validation.Constraint;
 import javax.validation.Payload;
 import java.lang.annotation.*;
 
-import static java.lang.annotation.ElementType.FIELD;
-import static java.lang.annotation.ElementType.METHOD;
 import static java.lang.annotation.RetentionPolicy.RUNTIME;
 
 /**
  * 标注在字符串类型的集合属性上，
  * 可以是 {@code String[]} 或者 {@code Collection<String>}。
- * 以指定分隔符合并字符串集合，
- * 验证其总长度不得大于指定值。
+ * 以指定分隔符合并字符串集合，验证其总长度不得大于指定值。
  * <p>
  * 使用场景：当数据库使用一个字段存储多个值时，比如：标签。
  *
  * @author peace
  */
-@Target({ElementType.FIELD, ElementType.METHOD})
+@Target({ElementType.FIELD, ElementType.METHOD, ElementType.PARAMETER, ElementType.TYPE_USE})
 @Retention(RetentionPolicy.RUNTIME)
 @Constraint(validatedBy = TotalLengthValidator.class)
 @Repeatable(TotalLength.List.class)
@@ -52,7 +49,7 @@ public @interface TotalLength {
     Class<? extends Payload>[] payload() default {};
 
     /** 同一个元素上可重复声明 {@link TotalLength} */
-    @Target({METHOD, FIELD})
+    @Target({ElementType.FIELD, ElementType.METHOD, ElementType.PARAMETER, ElementType.TYPE_USE})
     @Retention(RUNTIME)
     @Documented
     @interface List {
