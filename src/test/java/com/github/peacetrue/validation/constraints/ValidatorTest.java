@@ -19,7 +19,7 @@ import java.util.Set;
 @Slf4j
 class ValidatorTest {
 
-    private static final Validator VALIDATOR = Validation.buildDefaultValidatorFactory().getValidator();
+    private static final Validator VALIDATOR = getValidator(false, Locale.ROOT);
 
     private static Validator getValidator(boolean failFast, Locale locale) {
         return Validation
